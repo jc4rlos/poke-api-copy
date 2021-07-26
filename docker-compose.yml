@@ -1,0 +1,12 @@
+version: '2'
+services:
+  db:
+    image: mcmoe/mssqldocker
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: Password123
+      MSSQL_DB: 'pokemonDb'
+      MSSQL_USER: root
+      MSSQL_PASSWORD: Password123
+    ports:
+      - "1433:1433"

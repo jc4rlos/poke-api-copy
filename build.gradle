@@ -1,0 +1,95 @@
+plugins {
+	id 'org.springframework.boot' version '2.5.2'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id 'jacoco'
+	id 'checkstyle'
+	id "org.sonarqube" version "3.3"
+}
+
+group = 'com.pokemon'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.liquibase:liquibase-core'
+	implementation 'junit:junit:4.13.1'
+	runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.5.9'
+	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.7.2'
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.11.2'
+	testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.11.2'
+
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:2.5.2'
+	implementation 'io.micronaut.micrometer:micronaut-micrometer-registry-prometheus:3.4.1'
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	dependsOn test
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					"**/configuration/**",
+					"**/model/**",
+					"**/advice/**",
+					"**/pokedex/*Application*"
+			])
+		}))
+	}
+	reports {
+		xml.enabled true
+		csv.enabled false
+		html.enabled true
+	}
+	finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			enabled = false
+			limit {
+				minimum = 0.45
+			}
+		}
+	}
+}
+
+checkstyle {
+	toolVersion '8.19'
+	configFile file("${project.rootDir}/checkstyle.xml")
+	checkstyleTest.enabled = false
+}
+
+sonarqube {
+	properties {
+		property "sonar.sources", "src/main/java"
+		property "sonar.tests", "src/test/java"
+		property "sonar.coverage.exclusions",
+				"**/configuration/**," +
+						"**/advice/**," +
+						"**/model/**," +
+						"**/pokedex/*Application*"
+	}
+}

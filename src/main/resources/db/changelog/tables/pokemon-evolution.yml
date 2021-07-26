@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: pokemonEvolution-table
+      author: Carlos
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            - tableExists:
+                tableName: pokemon_evolution
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pokemon_evolution_key
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: pokemon_name
+                  type: VARCHAR(250)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: evolution
+                  type: VARCHAR(250)
+            tableName: pokemon_evolution
+  - changeSet:
+      id: pokemon-evolulution-inserts
+      author: Carlos
+      changes:
+        - sqlFile:
+            endDelimiter: ;
+            splitStatements: true
+            path: db/changelog/sql/pokemon-evolution-inserts.sql
+            stripComments: true

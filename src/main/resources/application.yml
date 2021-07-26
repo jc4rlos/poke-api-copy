@@ -1,0 +1,47 @@
+server:
+  port: 9091
+  servlet:
+    context-path: /pokedex/v1
+
+spring:
+  application:
+    name: pokedex-v1
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=pokemonDb
+    username: sa
+    password: Password123
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'
+    file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+  level:
+    org.springframework.web: ERROR
+    com.pokemon.pokedex: DEBUG
+    org.hibernate: ERROR
+
