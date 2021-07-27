@@ -2,17 +2,23 @@ package com.pokemon.pokedex.model.dto;
 
 import java.math.BigDecimal;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
- * <b>Class</b>:PokemonSaveDto <br/>.
+ * <b>Class</b>:PokemonDto <br/>.
  *
  * @author Carlos
  */
-@Data
+@Getter
+@Setter
 @Builder
-public class PokemonSaveDto  {
+@AllArgsConstructor
+@NoArgsConstructor
+public class PokemonDto {
   private Long id;
   private Long pokedexId;
   private String name;
