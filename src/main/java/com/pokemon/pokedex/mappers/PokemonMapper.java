@@ -1,9 +1,8 @@
 package com.pokemon.pokedex.mappers;
 
-import com.pokemon.pokedex.model.dto.PokemonGetDto;
+import com.pokemon.pokedex.model.dto.PokemonDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchFavoriteDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchNameDto;
-import com.pokemon.pokedex.model.dto.PokemonSaveDto;
 import com.pokemon.pokedex.model.entity.Pokemon;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -22,7 +21,7 @@ public final class PokemonMapper {
    * @param pokemonSaveDto .
    * @return Pokemon
    */
-  public static Pokemon pokemonSaveDtoToPokemon(final PokemonSaveDto pokemonSaveDto) {
+  public static Pokemon pokemonDtoToPokemon(final PokemonDto pokemonSaveDto) {
     if (pokemonSaveDto == null) {
       return null;
     }
@@ -78,11 +77,11 @@ public final class PokemonMapper {
    * @param pokemon .
    * @return PokemonGetDto
    */
-  public static PokemonGetDto pokemonToPokemonGetDto(final Pokemon pokemon) {
+  public static PokemonDto pokemonToPokemonDto(final Pokemon pokemon) {
     if (pokemon == null) {
       return null;
     }
-    return PokemonGetDto.builder()
+    return PokemonDto.builder()
             .id(pokemon.getId())
             .pokedexId(pokemon.getPokedexId())
             .order(pokemon.getOrder())

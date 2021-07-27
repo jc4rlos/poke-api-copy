@@ -1,8 +1,8 @@
 package com.pokemon.pokedex.mappers;
 
+import com.pokemon.pokedex.model.dto.PokemonDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchFavoriteDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchNameDto;
-import com.pokemon.pokedex.model.dto.PokemonSaveDto;
 import com.pokemon.pokedex.model.entity.Pokemon;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,13 +11,13 @@ class PokemonMapperTest {
 
   @Test
   void pokemonSaveDtoToPokemon() {
-    final Pokemon pokemon = PokemonMapper.pokemonSaveDtoToPokemon(getPokemonSaveDto());
+    final Pokemon pokemon = PokemonMapper.pokemonDtoToPokemon(getPokemonDto());
     Assertions.assertThat(pokemon).isNotNull();
   }
 
   @Test
   void pokemonSaveDtoToPokemon_when_pokemonSaveDto_is_null() {
-    Assertions.assertThat(PokemonMapper.pokemonSaveDtoToPokemon(null)).isNull();
+    Assertions.assertThat(PokemonMapper.pokemonDtoToPokemon(null)).isNull();
   }
 
   @Test
@@ -44,11 +44,11 @@ class PokemonMapperTest {
 
   @Test
   void pokemonToPokemonGetDto_when_pokemonGetDto_is_null() {
-    Assertions.assertThat(PokemonMapper.pokemonToPokemonGetDto(null)).isNull();
+    Assertions.assertThat(PokemonMapper.pokemonToPokemonDto(null)).isNull();
   }
 
-  private PokemonSaveDto getPokemonSaveDto() {
-    return PokemonSaveDto.builder()
+  private PokemonDto getPokemonDto() {
+    return PokemonDto.builder()
             .name("pokemon").build();
   }
 

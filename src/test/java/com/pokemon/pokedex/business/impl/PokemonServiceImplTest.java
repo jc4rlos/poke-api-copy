@@ -1,56 +1,70 @@
 package com.pokemon.pokedex.business.impl;
 
 import com.pokemon.pokedex.exception.PokemonNotFoundException;
-import com.pokemon.pokedex.model.dto.PokemonGetDto;
+import com.pokemon.pokedex.mappers.PokemonsMapper;
+import com.pokemon.pokedex.model.dto.PokemonDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchFavoriteDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchNameDto;
-import com.pokemon.pokedex.model.dto.PokemonSaveDto;
 import com.pokemon.pokedex.model.entity.Pokemon;
+import com.pokemon.pokedex.model.entity.PokemonEvolution;
+import com.pokemon.pokedex.repository.PokemonEvolutionRepository;
 import com.pokemon.pokedex.repository.PokemonRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class PokemonServiceImplTest {
 
   @Mock
   private PokemonRepository pokemonRepository;
 
+  @Mock
+  private PokemonEvolutionRepository pokemonEvolutionRepository;
+
+  @Mock
+  private  PokemonsMapper pokemonsMapper;
+
   @InjectMocks
   private PokemonServiceImpl pokemonService;
 
-  private final Long id =1L;
+  private final Long id = 1L;
 
 
-  @Test
-  void whenSavePokemon_ShouldReturnPokemon() {
-    //given
-    final Pokemon pokemon = getPokemon();
-    final PokemonSaveDto pokemonSaveDto = getPokemonSaveDto();
-    when(pokemonRepository.save(any(Pokemon.class))).thenReturn(pokemon);
+    @Test
+    void whenSavePokemon_ShouldReturnPokemon() throws PokemonNotFoundException {
+      //given
+      final Pokemon pokemon = getPokemon();
+      final PokemonDto pokemonDto = getPokemonDto();
+      final PokemonEvolution pokemonEvolution= PokemonEvolution.builder().evolution("pokemon").build();
+      when(pokemonEvolutionRepository.findByPokemonName(anyString()))
+              .thenReturn(pokemonEvolution);
 
-    //when
-    final PokemonGetDto createdPokemon = pokemonService.savePokemon(pokemonSaveDto);
+      when(pokemonRepository.save(any(Pokemon.class)))
+              .thenReturn(pokemon);
+      //when
+       pokemonService.savePokemon(pokemonDto);
 
-    //then
-    verify(pokemonRepository).save(pokemon);
-    assertThat(createdPokemon.getName()).isEqualTo(pokemon.getName());
-
-  }
+      //then
+      assertThat(pokemonDto).isInstanceOf(PokemonDto.class);
+    }
 
   @Test
   void shouldReturnAllPokemons() {
@@ -58,7 +72,7 @@ class PokemonServiceImplTest {
 
     when(pokemonRepository.findAll()).thenReturn(pokemons);
 
-    List<PokemonGetDto> expected = pokemonService.findAllPokemons();
+    List<PokemonDto> expected = pokemonService.findAllPokemons();
 
     verify(pokemonRepository).findAll();
     assertThat(pokemons.size()).isEqualTo(expected.size());
@@ -66,11 +80,11 @@ class PokemonServiceImplTest {
   }
 
   @Test
-  void whenGivenId_shouldDeletePokemon_ifFound() {
+  void whenGivenId_shouldDeletePokemon_ifFound() throws PokemonNotFoundException {
     final Pokemon pokemon = getPokemon();
     when(pokemonRepository.findById(anyLong())).thenReturn(Optional.of(pokemon));
 
-    final PokemonGetDto deletedPokemon = pokemonService.deletePokemonById(id);
+    final PokemonDto deletedPokemon = pokemonService.deletePokemonById(id);
 
     verify(pokemonRepository).findById(id);
     verify(pokemonRepository).delete(pokemon);
@@ -80,15 +94,15 @@ class PokemonServiceImplTest {
   @Test
   void should_throw_exception_when_deletePokemon() {
     when(pokemonRepository.findById(anyLong())).thenReturn(Optional.ofNullable(null));
-    assertThrows(PokemonNotFoundException.class, ()-> pokemonService.deletePokemonById(id));
+    assertThrows(PokemonNotFoundException.class, () -> pokemonService.deletePokemonById(id));
   }
 
   @Test
-  void whenGivenId_shouldReturnPokemon_ifFound(){
+  void whenGivenId_shouldReturnPokemon_ifFound()throws PokemonNotFoundException {
     final Pokemon pokemon = getPokemon();
     when(pokemonRepository.findById(anyLong())).thenReturn(Optional.of(pokemon));
 
-    final PokemonGetDto expected = pokemonService.findPokemonById(id);
+    final PokemonDto expected = pokemonService.findPokemonById(id);
 
     verify(pokemonRepository).findById(id);
     assertThat(pokemon.getName()).isEqualTo(expected.getName());
@@ -98,18 +112,18 @@ class PokemonServiceImplTest {
   @Test
   void should_throw_exception_when_findPokemonById() {
     when(pokemonRepository.findById(anyLong())).thenReturn(Optional.ofNullable(null));
-    assertThrows(PokemonNotFoundException.class, ()-> pokemonService.findPokemonById(id));
+    assertThrows(PokemonNotFoundException.class, () -> pokemonService.findPokemonById(id));
   }
 
   @Test
-  void whenGivenId_shouldUpdatePokemon_ifFound(){
+  void whenGivenId_shouldUpdatePokemon_ifFound() {
     final Pokemon pokemon = getPokemon();
-    final PokemonSaveDto pokemonSaveDto = getPokemonSaveDto();
+    final PokemonDto pokemonDto = getPokemonDto();
 
     when(pokemonRepository.findById(anyLong())).thenReturn(Optional.of(pokemon));
     when(pokemonRepository.save(any(Pokemon.class))).thenReturn(pokemon);
 
-    final PokemonGetDto updatedPokemon = pokemonService.updatePokemon(pokemonSaveDto,id);
+    final PokemonDto updatedPokemon = pokemonService.updatePokemon(pokemonDto, id);
 
     verify(pokemonRepository).save(pokemon);
     verify(pokemonRepository).findById(id);
@@ -119,20 +133,20 @@ class PokemonServiceImplTest {
 
   @Test
   void should_throw_exception_when_updatePokemon() {
-    final PokemonSaveDto pokemonSaveDto = getPokemonSaveDto();
+    final PokemonDto pokemonDto = getPokemonDto();
     when(pokemonRepository.findById(anyLong())).thenReturn(Optional.ofNullable(null));
-    assertThrows(PokemonNotFoundException.class, ()-> pokemonService.updatePokemon(pokemonSaveDto,id));
+    assertThrows(PokemonNotFoundException.class, () -> pokemonService.updatePokemon(pokemonDto, id));
   }
 
   @Test
-  void whenGivenId_shouldPatchNamePokemon_ifFound(){
+  void whenGivenId_shouldPatchNamePokemon_ifFound() {
     final Pokemon pokemon = getPokemon();
     final PokemonPatchNameDto pokemonPatchNameDto = getPokemonPatchNameDto();
 
     when(pokemonRepository.findById(anyLong())).thenReturn(Optional.of(pokemon));
     when(pokemonRepository.save(any(Pokemon.class))).thenReturn(pokemon);
 
-    final PokemonGetDto updatedPokemon = pokemonService.patchNamePokemon(pokemonPatchNameDto,id);
+    final PokemonDto updatedPokemon = pokemonService.patchNamePokemon(pokemonPatchNameDto, id);
 
     verify(pokemonRepository).save(pokemon);
     verify(pokemonRepository).findById(id);
@@ -145,18 +159,18 @@ class PokemonServiceImplTest {
     final PokemonPatchNameDto pokemonPatchNameDto = getPokemonPatchNameDto();
 
     when(pokemonRepository.findById(anyLong())).thenReturn(Optional.ofNullable(null));
-    assertThrows(PokemonNotFoundException.class, ()-> pokemonService.patchNamePokemon(pokemonPatchNameDto,id));
+    assertThrows(PokemonNotFoundException.class, () -> pokemonService.patchNamePokemon(pokemonPatchNameDto, id));
   }
 
   @Test
-  void whenGivenId_shouldPatchFavoritePokemon_ifFound(){
+  void whenGivenId_shouldPatchFavoritePokemon_ifFound() {
     final Pokemon pokemon = getPokemon();
     final PokemonPatchFavoriteDto pokemonPatchFavoriteDto = getPokemonPatchFavoriteDto();
 
     when(pokemonRepository.findById(anyLong())).thenReturn(Optional.of(pokemon));
     when(pokemonRepository.save(any(Pokemon.class))).thenReturn(pokemon);
 
-    final PokemonGetDto updatedPokemon = pokemonService.patchFavoritePokemon(pokemonPatchFavoriteDto,id);
+    final PokemonDto updatedPokemon = pokemonService.patchFavoritePokemon(pokemonPatchFavoriteDto, id);
 
     verify(pokemonRepository).save(pokemon);
     verify(pokemonRepository).findById(id);
@@ -168,24 +182,26 @@ class PokemonServiceImplTest {
   void should_throw_exception_when_patchFavoritePokemon() {
     final PokemonPatchFavoriteDto pokemonPatchFavoriteDto = getPokemonPatchFavoriteDto();
     when(pokemonRepository.findById(anyLong())).thenReturn(Optional.ofNullable(null));
-    assertThrows(PokemonNotFoundException.class, ()-> pokemonService.patchFavoritePokemon(pokemonPatchFavoriteDto,id));
+    assertThrows(PokemonNotFoundException.class, () -> pokemonService.patchFavoritePokemon(pokemonPatchFavoriteDto, id));
   }
 
-  private PokemonPatchFavoriteDto getPokemonPatchFavoriteDto(){
-   return PokemonPatchFavoriteDto.builder().favorite(true).id(id).build();
+  private PokemonPatchFavoriteDto getPokemonPatchFavoriteDto() {
+    return PokemonPatchFavoriteDto.builder().favorite(true).id(id).build();
   }
 
-  private PokemonPatchNameDto getPokemonPatchNameDto(){
+  private PokemonPatchNameDto getPokemonPatchNameDto() {
     return PokemonPatchNameDto.builder().name("pokemon").build();
   }
 
-  private PokemonSaveDto getPokemonSaveDto() {
-    return PokemonSaveDto.builder()
+  private PokemonDto getPokemonDto() {
+    return PokemonDto.builder()
+            .id(id)
             .name("pokemon").build();
   }
 
   private Pokemon getPokemon() {
     return Pokemon.builder()
+            .id(id)
             .name("pokemon").build();
   }
 
