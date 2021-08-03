@@ -1,6 +1,8 @@
 package com.pokemon.pokedex.model.dto;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,4 +37,6 @@ public class PokemonDto {
   private boolean favorite;
   private boolean shiny;
   private String evolution;
+  private Integer requiredCandies;
+  private List<PokemonMoveDto> moves = new ArrayList<>();
 }

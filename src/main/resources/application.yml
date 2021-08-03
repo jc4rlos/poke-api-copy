@@ -14,7 +14,7 @@ spring:
     password: Password123
     driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: none
     properties:

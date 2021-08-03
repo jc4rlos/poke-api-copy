@@ -36,6 +36,7 @@ public class PokemonServiceImpl implements PokemonService {
     final PokemonEvolution pokemonEvolution = pokemonEvolutionRepository.findByPokemonName(pokemonDto.getName());
     if (pokemonEvolution != null) {
       pokemonDto.setEvolution(pokemonEvolution.getEvolution());
+      pokemonDto.setRequiredCandies(pokemonEvolution.getCandyAmount());
     }
     final Pokemon pokemon = pokemonRepository.save(PokemonMapper.pokemonDtoToPokemon(pokemonDto));
     return PokemonMapper.pokemonToPokemonDto(pokemon);
