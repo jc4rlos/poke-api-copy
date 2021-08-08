@@ -88,8 +88,12 @@ databaseChangeLog:
                   name: evolution
                   type: VARCHAR(250)
               - column:
-                  constraints:
-                    nullable: false
+                  name: required_candies
+                  type: int
+              - column:
+                  name: deleted
+                  type: BIT
+              - column:
                   name: created_at
                   type: DATETIME
               - column:

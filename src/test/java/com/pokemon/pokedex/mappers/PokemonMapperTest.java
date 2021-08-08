@@ -1,11 +1,14 @@
 package com.pokemon.pokedex.mappers;
 
 import com.pokemon.pokedex.model.dto.PokemonDto;
+import com.pokemon.pokedex.model.dto.PokemonMoveDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchFavoriteDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchNameDto;
 import com.pokemon.pokedex.model.entity.Pokemon;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 class PokemonMapperTest {
 
@@ -49,7 +52,9 @@ class PokemonMapperTest {
 
   private PokemonDto getPokemonDto() {
     return PokemonDto.builder()
-            .name("pokemon").build();
+            .name("pokemon")
+            .moves(List.of(getPokemonMoveDto()))
+            .build();
   }
 
   private PokemonPatchFavoriteDto getPokemonPatchFavoriteDto() {
@@ -60,4 +65,7 @@ class PokemonMapperTest {
     return PokemonPatchNameDto.builder().name("pokemon").build();
   }
 
+  private PokemonMoveDto getPokemonMoveDto(){
+    return PokemonMoveDto.builder().id(1L).build();
+  }
 }

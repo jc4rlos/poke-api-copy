@@ -6,12 +6,11 @@ databaseChangeLog:
         - onFail: MARK_RAN
           not:
             - tableExists:
-                tableName: pokemon_evolution
+                tableName: pokemon_evolutions
       changes:
         - createTable:
             columns:
               - column:
-                  autoIncrement: true
                   constraints:
                     nullable: false
                     primaryKey: true
@@ -28,7 +27,12 @@ databaseChangeLog:
                     nullable: false
                   name: evolution
                   type: VARCHAR(250)
-            tableName: pokemon_evolution
+              - column:
+                  constraints:
+                    nullable: false
+                  name: candy_amount
+                  type: int
+            tableName: pokemon_evolutions
   - changeSet:
       id: pokemon-evolulution-inserts
       author: Carlos

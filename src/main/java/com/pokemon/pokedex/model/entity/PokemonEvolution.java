@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
  */
 
 @Entity()
-@Table(name = "pokemon_evolution")
+@Table(name = "pokemon_evolutions")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,5 +33,8 @@ public class PokemonEvolution {
 
   @Column(name = "evolution")
   private String evolution;
+
+  @Column(name = "candy_amount")
+  private Integer candyAmount;
 
 }

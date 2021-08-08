@@ -14,7 +14,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PokemonEvolutionRepository extends JpaRepository<PokemonEvolution, Long> {
   PokemonEvolution findByPokemonName(String pokemonName);
-
-  /*@Query("select p.id,p.evolution,p.pokemon_name from pokemon_evolution p where p.pokemon_name = ?1")
-  PokemonEvolution findByPokemonNameWithQuery(String pokemonName);*/
 }

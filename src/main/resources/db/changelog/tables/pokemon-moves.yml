@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: pokemon-moves-table
+      author: Carlos
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            - tableExists:
+                tableName: pokemon_moves
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pokemon_moves_key
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(250)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: type
+                  type: VARCHAR(50)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: power
+                  type: int
+              - column:
+                  constraints:
+                    nullable: false
+                    foreignKeyName: pokemon_moves_pokemon_fk
+                    references: pokemons(id)
+                  name: pokemon_id
+                  type: BIGINT
+              - column:
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+            tableName: pokemon_moves
