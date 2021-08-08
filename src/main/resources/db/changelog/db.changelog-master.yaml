@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/tables/pokemons.yml
+  - include:
+      file: db/changelog/tables/pokemon-evolution.yml
+  - include:
+      file: db/changelog/tables/pokemon-moves.yml

@@ -1,0 +1,102 @@
+databaseChangeLog:
+  - changeSet:
+      id: pokemons-table
+      author: carlos
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            - tableExists:
+                tableName: pokemons
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pokemons_key
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: pokedex_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: order_number
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: cp
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: hp
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: weight
+                  type: DECIMAL(8,2)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: height
+                  type: DECIMAL(8,2)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: gender
+                  type: VARCHAR(50)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: type
+                  type: VARCHAR(250)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: candy
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: star_dust
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: image
+                  type: VARCHAR(500)
+              - column:
+                  name: favorite
+                  type: BIT
+              - column:
+                  name: shiny
+                  type: BIT
+              - column:
+                  name: evolution
+                  type: VARCHAR(250)
+              - column:
+                  name: required_candies
+                  type: int
+              - column:
+                  name: deleted
+                  type: BIT
+              - column:
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  name: updated_at
+                  type: DATETIME
+            tableName: pokemons
