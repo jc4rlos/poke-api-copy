@@ -68,7 +68,7 @@ public class Pokemon extends Audit {
   @Builder.Default
   private Boolean deleted = Boolean.FALSE;
 
-  @OneToMany(mappedBy = "pokemon",cascade = CascadeType.REMOVE)
+  @OneToMany(mappedBy = "pokemon",cascade = CascadeType.ALL)
   private List<PokemonMove> moves ;
 
 }

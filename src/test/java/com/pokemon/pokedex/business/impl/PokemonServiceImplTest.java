@@ -1,12 +1,13 @@
 package com.pokemon.pokedex.business.impl;
 
 import com.pokemon.pokedex.exception.PokemonNotFoundException;
-import com.pokemon.pokedex.mappers.PokemonsMapper;
 import com.pokemon.pokedex.model.dto.PokemonDto;
+import com.pokemon.pokedex.model.dto.PokemonMoveDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchFavoriteDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchNameDto;
 import com.pokemon.pokedex.model.entity.Pokemon;
 import com.pokemon.pokedex.model.entity.PokemonEvolution;
+import com.pokemon.pokedex.model.entity.PokemonMove;
 import com.pokemon.pokedex.repository.PokemonEvolutionRepository;
 import com.pokemon.pokedex.repository.PokemonRepository;
 import org.junit.jupiter.api.Test;
@@ -22,8 +23,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,9 +38,6 @@ class PokemonServiceImplTest {
 
   @Mock
   private PokemonEvolutionRepository pokemonEvolutionRepository;
-
-  @Mock
-  private  PokemonsMapper pokemonsMapper;
 
   @InjectMocks
   private PokemonServiceImpl pokemonService;
@@ -70,11 +67,11 @@ class PokemonServiceImplTest {
   void shouldReturnAllPokemons() {
     List<Pokemon> pokemons = List.of(getPokemon());
 
-    when(pokemonRepository.findAll()).thenReturn(pokemons);
+    when(pokemonRepository.findAllByOrderByCreatedAtAndCp(anyString(),anyBoolean())).thenReturn(pokemons);
 
-    List<PokemonDto> expected = pokemonService.findAllPokemons();
+    List<PokemonDto> expected = pokemonService.findAllPokemons("CP",true);
 
-    verify(pokemonRepository).findAll();
+    verify(pokemonRepository).findAllByOrderByCreatedAtAndCp("CP",true);
     assertThat(pokemons.size()).isEqualTo(expected.size());
 
   }
@@ -83,6 +80,7 @@ class PokemonServiceImplTest {
   void whenGivenId_shouldDeletePokemon_ifFound() throws PokemonNotFoundException {
     final Pokemon pokemon = getPokemon();
     when(pokemonRepository.findById(anyLong())).thenReturn(Optional.of(pokemon));
+    when(pokemonRepository.updatePokemonCandies(any(),any())).thenReturn(1);
 
     final PokemonDto deletedPokemon = pokemonService.deletePokemonById(id);
 
@@ -196,13 +194,23 @@ class PokemonServiceImplTest {
   private PokemonDto getPokemonDto() {
     return PokemonDto.builder()
             .id(id)
+            .moves(List.of(getPokemonMoveDto()))
             .name("pokemon").build();
   }
 
   private Pokemon getPokemon() {
     return Pokemon.builder()
             .id(id)
+            .moves(List.of(getPokemonMove()))
             .name("pokemon").build();
+  }
+
+  private PokemonMoveDto getPokemonMoveDto(){
+    return PokemonMoveDto.builder().id(1L).build();
+  }
+
+  private PokemonMove getPokemonMove(){
+    return PokemonMove.builder().id(1L).build();
   }
 
 }

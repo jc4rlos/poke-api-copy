@@ -19,6 +19,8 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.when;
@@ -60,7 +62,7 @@ class PokemonControllerTest {
   @Test
   void findAllPokemons_whenGetMethod() throws Exception {
     final List<PokemonDto> pokemons =List.of(getPokemonDto());
-    when(pokemonService.findAllPokemons()).thenReturn(pokemons);
+    when(pokemonService.findAllPokemons(anyString(),anyBoolean())).thenReturn(pokemons);
 
     mockMvc.perform(get("/pokemons")
             .accept(MediaType.APPLICATION_JSON)

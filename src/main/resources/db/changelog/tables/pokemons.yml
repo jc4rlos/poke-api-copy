@@ -94,8 +94,6 @@ databaseChangeLog:
                   name: deleted
                   type: BIT
               - column:
-                  constraints:
-                    nullable: false
                   name: created_at
                   type: DATETIME
               - column:

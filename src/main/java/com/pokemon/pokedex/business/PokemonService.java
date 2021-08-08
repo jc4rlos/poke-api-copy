@@ -15,7 +15,7 @@ import java.util.List;
 public interface PokemonService {
   PokemonDto savePokemon(PokemonDto pokemonDto) throws PokemonNotFoundException;
 
-  List<PokemonDto> findAllPokemons();
+  List<PokemonDto> findAllPokemons(String orderByColumn, boolean ascending);
 
   PokemonDto deletePokemonById(Long id) throws PokemonNotFoundException;
 

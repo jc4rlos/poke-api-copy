@@ -12,11 +12,13 @@ import com.pokemon.pokedex.repository.PokemonEvolutionRepository;
 import com.pokemon.pokedex.repository.PokemonRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <b>Class</b>:PokemonServiceImpl <br/>.
@@ -32,28 +34,30 @@ public class PokemonServiceImpl implements PokemonService {
   private final PokemonEvolutionRepository pokemonEvolutionRepository;
 
   @Override
+  public List<PokemonDto> findAllPokemons(final String orderByColumn, final boolean ascending) {
+    return pokemonRepository.findAllByOrderByCreatedAtAndCp(orderByColumn,ascending)
+            .stream().map(PokemonMapper::pokemonToPokemonDto)
+            .collect(Collectors.toList());
+  }
+
+  @Override
   public PokemonDto savePokemon(final PokemonDto pokemonDto) throws PokemonNotFoundException {
-    final PokemonEvolution pokemonEvolution = pokemonEvolutionRepository.findByPokemonName(pokemonDto.getName());
-    if (pokemonEvolution != null) {
-      pokemonDto.setEvolution(pokemonEvolution.getEvolution());
-      pokemonDto.setRequiredCandies(pokemonEvolution.getCandyAmount());
+    final Optional<PokemonEvolution> pokemonEvolution = pokemonEvolutionRepository.findById(pokemonDto.getPokedexId());
+    if (pokemonEvolution.isPresent()) {
+      pokemonDto.setEvolution(pokemonEvolution.get().getEvolution());
+      pokemonDto.setRequiredCandies(pokemonEvolution.get().getCandyAmount());
     }
     final Pokemon pokemon = pokemonRepository.save(PokemonMapper.pokemonDtoToPokemon(pokemonDto));
     return PokemonMapper.pokemonToPokemonDto(pokemon);
   }
 
   @Override
-  public List<PokemonDto> findAllPokemons() {
-    return pokemonRepository.findAll()
-            .stream().map(PokemonMapper::pokemonToPokemonDto)
-            .collect(Collectors.toList());
-  }
-
-  @Override
+  @Transactional
   public PokemonDto deletePokemonById(final Long id) throws PokemonNotFoundException {
     return pokemonRepository.findById(id)
             .map(pokemon -> {
               pokemonRepository.delete(pokemon);
+              pokemonRepository.updatePokemonCandies(pokemon.getCandy(), pokemon.getPokedexId());
               return PokemonMapper.pokemonToPokemonDto(pokemon);
             })
             .orElseThrow(() -> new PokemonNotFoundException(id));
@@ -68,6 +72,11 @@ public class PokemonServiceImpl implements PokemonService {
 
   @Override
   public PokemonDto updatePokemon(final PokemonDto pokemonDto, final Long id) throws PokemonNotFoundException {
+    final Optional<PokemonEvolution> pokemonEvolution = pokemonEvolutionRepository.findById(pokemonDto.getPokedexId());
+    if (pokemonEvolution.isPresent()) {
+      pokemonDto.setEvolution(pokemonEvolution.get().getEvolution());
+      pokemonDto.setRequiredCandies(pokemonEvolution.get().getCandyAmount());
+    }
     return pokemonRepository.findById(id)
             .map(pokemon -> PokemonMapper.pokemonDtoToPokemon(pokemonDto))
             .map(pokemonRepository::save)

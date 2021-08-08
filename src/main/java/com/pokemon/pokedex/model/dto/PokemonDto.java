@@ -3,7 +3,8 @@ package com.pokemon.pokedex.model.dto;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +24,8 @@ import lombok.Setter;
 public class PokemonDto {
   private Long id;
   private Long pokedexId;
+  @NotNull
+  @NotEmpty
   private String name;
   private Integer order;
   private Integer cp;

@@ -41,8 +41,6 @@ databaseChangeLog:
                   name: pokemon_id
                   type: BIGINT
               - column:
-                  constraints:
-                    nullable: false
                   name: created_at
                   type: DATETIME
               - column:
