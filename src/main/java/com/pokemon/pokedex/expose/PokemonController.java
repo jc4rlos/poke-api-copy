@@ -6,7 +6,9 @@ import com.pokemon.pokedex.exception.PokemonNotFoundException;
 import com.pokemon.pokedex.model.dto.PokemonDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchFavoriteDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchNameDto;
+
 import java.util.List;
+import javax.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +21,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+
+
 
 /**
  * <b>Class</b>:PokemonController <br/>.
@@ -34,11 +40,12 @@ public class PokemonController {
 
   /**
    * pokemonDto .
+   *
    * @param pokemonDto .
    * @return
    */
   @PostMapping
-  public ResponseEntity<PokemonDto> savePokemon(@RequestBody final PokemonDto pokemonDto) {
+  public ResponseEntity<PokemonDto> savePokemon(@Valid @RequestBody final PokemonDto pokemonDto) {
     return new ResponseEntity<>(pokemonService.savePokemon(pokemonDto), HttpStatus.CREATED);
   }
 
@@ -48,8 +55,9 @@ public class PokemonController {
    * @return List of PokemonDto
    */
   @GetMapping
-  public ResponseEntity<List<PokemonDto>> findAllPokemons() {
-    return new ResponseEntity<>(pokemonService.findAllPokemons(), HttpStatus.OK);
+  public ResponseEntity<List<PokemonDto>> findAllPokemons(@RequestParam("orderByColumn") final String orderByColumn,
+                                                          @RequestParam("ascending") final boolean ascending) {
+    return new ResponseEntity<>(pokemonService.findAllPokemons(orderByColumn, ascending), HttpStatus.OK);
   }
 
   @GetMapping("/{id}")
@@ -59,19 +67,19 @@ public class PokemonController {
 
   @PutMapping("/{id}")
   public ResponseEntity<PokemonDto> updatePokemon(@RequestBody final PokemonDto pokemonDto,
-                                                     @PathVariable("id") final Long id) throws PokemonNotFoundException {
+                                                  @PathVariable("id") final Long id) throws PokemonNotFoundException {
     return new ResponseEntity<>(pokemonService.updatePokemon(pokemonDto, id), HttpStatus.OK);
   }
 
   @PatchMapping("/update-name/{id}")
   public ResponseEntity<PokemonDto> patchNamePokemon(@RequestBody final PokemonPatchNameDto pokemonPatchNameDto,
-                                                        @PathVariable("id") final Long id) throws PokemonNotFoundException {
+                                                     @PathVariable("id") final Long id) throws PokemonNotFoundException {
     return new ResponseEntity<>(pokemonService.patchNamePokemon(pokemonPatchNameDto, id), HttpStatus.OK);
   }
 
   @PatchMapping("/make-favorite/{id}")
   public ResponseEntity<PokemonDto> patchFavoritePokemon(@RequestBody final PokemonPatchFavoriteDto pokemonPatchFavoriteDto,
-                                                            @PathVariable("id") final Long id) throws PokemonNotFoundException {
+                                                         @PathVariable("id") final Long id) throws PokemonNotFoundException {
     return new ResponseEntity<>(pokemonService.patchFavoritePokemon(pokemonPatchFavoriteDto, id), HttpStatus.OK);
   }
 

@@ -43,5 +43,6 @@ logging:
   level:
     org.springframework.web: ERROR
     com.pokemon.pokedex: DEBUG
-    org.hibernate: ERROR
+    org.hibernate:
+      SQL: DEBUG
 
