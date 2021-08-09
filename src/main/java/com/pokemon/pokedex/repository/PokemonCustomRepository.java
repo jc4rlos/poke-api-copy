@@ -9,6 +9,7 @@ import java.util.List;
  *
  * @author Carlos
  */
+@FunctionalInterface
 public interface PokemonCustomRepository {
   List<Pokemon> findAllByOrderByCreatedAtAndCp(String orderByColumn, boolean ascending);
 }

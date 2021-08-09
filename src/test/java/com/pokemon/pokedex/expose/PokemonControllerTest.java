@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -61,10 +62,11 @@ class PokemonControllerTest {
 
   @Test
   void findAllPokemons_whenGetMethod() throws Exception {
-    final List<PokemonDto> pokemons =List.of(getPokemonDto());
+    final List<PokemonDto> pokemons = new ArrayList<>();
+    pokemons.add(getPokemonDto());
     when(pokemonService.findAllPokemons(anyString(),anyBoolean())).thenReturn(pokemons);
 
-    mockMvc.perform(get("/pokemons")
+    mockMvc.perform(get("/pokemons?orderByColumn=CP&ascending=false")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())

@@ -8,6 +8,7 @@ import com.pokemon.pokedex.model.entity.Pokemon;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class PokemonMapperTest {
@@ -46,14 +47,34 @@ class PokemonMapperTest {
   }
 
   @Test
-  void pokemonToPokemonGetDto_when_pokemonGetDto_is_null() {
+  void pokemonToPokemonDto_when_pokemonGetDto_is_null() {
     Assertions.assertThat(PokemonMapper.pokemonToPokemonDto(null)).isNull();
   }
 
+  @Test
+  void pokemonToPokemonDto_when_moves_is_null() {
+    final Pokemon pokemon = PokemonMapper.pokemonDtoToPokemon(getPokemonDto());
+    pokemon.setMoves(null);
+    Assertions.assertThat(PokemonMapper.pokemonToPokemonDto(pokemon)).isNotNull();
+  }
+
+  @Test
+  void pokemonDtoMoveToPokemonMove_when_pokemonDtoMove_is_null(){
+    Assertions.assertThat(PokemonMapper.pokemonDtoMoveToPokemonMove(null)).isNull();
+  }
+
+  @Test
+  void pokemonMoveToPokemonMoveDto_when_pokemonMove_is_null(){
+    Assertions.assertThat(PokemonMapper.pokemonMoveToPokemonMoveDto(null)).isNull();
+  }
+
+
   private PokemonDto getPokemonDto() {
+    final List<PokemonMoveDto> moves = new ArrayList<>();
+    moves.add(getPokemonMoveDto());
     return PokemonDto.builder()
             .name("pokemon")
-            .moves(List.of(getPokemonMoveDto()))
+            .moves(moves)
             .build();
   }
 
