@@ -41,5 +41,6 @@ public class PokemonDto {
   private boolean shiny;
   private String evolution;
   private Integer requiredCandies;
+  @Builder.Default
   private List<PokemonMoveDto> moves = new ArrayList<>();
 }

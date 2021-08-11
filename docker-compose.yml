@@ -1,27 +1,25 @@
-version: '2'
+version: '3.7'
 services:
   backend:
     image: pokedex-api:latest
-    restart: always
-    volumes:
-      - ./docker-files/application.yml:/opt/application.yml
+    restart: unless-stopped
     ports:
       - "9091:9091"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:sqlserver://pokemon_db:1433;databaseName=pokemonDb
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=Password123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
     depends_on:
-      - db
-    networks:
-      - pokedex-db-network
-  db:
+      - pokemon_db
+
+  pokemon_db:
     image: mcmoe/mssqldocker
     environment:
-      ACCEPT_EULA: Y
+      ACCEPT_EULA: 'Y'
       SA_PASSWORD: Password123
       MSSQL_DB: 'pokemonDb'
       MSSQL_USER: root
       MSSQL_PASSWORD: Password123
     ports:
       - "1433:1433"
-    networks:
-      - pokedex-db-network
-networks:
-  pokedex-db-network:
