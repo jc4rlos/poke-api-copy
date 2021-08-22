@@ -6,7 +6,6 @@ import com.pokemon.pokedex.exception.PokemonNotFoundException;
 import com.pokemon.pokedex.model.dto.PokemonDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchFavoriteDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchNameDto;
-
 import java.util.List;
 import javax.validation.Valid;
 
@@ -33,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Carlos
  */
 @RestController
-@RequestMapping("/pokemons")
+@RequestMapping("/v1/pokemons")
 @RequiredArgsConstructor
 public class PokemonController {
   private final PokemonService pokemonService;

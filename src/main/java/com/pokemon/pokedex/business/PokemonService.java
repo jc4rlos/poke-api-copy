@@ -2,6 +2,7 @@ package com.pokemon.pokedex.business;
 
 import com.pokemon.pokedex.exception.PokemonNotFoundException;
 import com.pokemon.pokedex.model.dto.PokemonDto;
+import com.pokemon.pokedex.model.dto.PokemonInfoDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchFavoriteDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchNameDto;
 
@@ -26,6 +27,8 @@ public interface PokemonService {
   PokemonDto patchNamePokemon(PokemonPatchNameDto pokemonPatchNameDto, Long id) throws PokemonNotFoundException;
 
   PokemonDto patchFavoritePokemon(PokemonPatchFavoriteDto pokemonPatchFavoriteDto, Long id) throws PokemonNotFoundException;
+
+  List<PokemonInfoDto> findAllPokemonInfo(Long maxId);
 
 
 }

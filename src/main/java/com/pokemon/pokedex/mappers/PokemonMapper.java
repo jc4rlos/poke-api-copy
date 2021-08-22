@@ -9,6 +9,7 @@ import com.pokemon.pokedex.model.entity.PokemonMove;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -32,7 +33,6 @@ public final class PokemonMapper {
     if (pokemonDto == null) {
       return null;
     }
-    List<PokemonMove> moves = new ArrayList<>();
     final Pokemon pokemon = Pokemon.builder()
             .id(pokemonDto.getId())
             .pokedexId(pokemonDto.getPokedexId())
@@ -49,15 +49,9 @@ public final class PokemonMapper {
             .image(pokemonDto.getImage())
             .evolution(pokemonDto.getEvolution())
             .shiny(pokemonDto.isShiny())
-            .moves(moves)
             .requiredCandies(pokemonDto.getRequiredCandies())
             .favorite(pokemonDto.isFavorite()).build();
-
-    for (PokemonMoveDto pokemonMoveDto : pokemonDto.getMoves()) {
-      final PokemonMove pokemonMove = pokemonDtoMoveToPokemonMove(pokemonMoveDto);
-      pokemonMove.setPokemon(pokemon);
-      moves.add(pokemonMove);
-    }
+    pokemon.setMoves(pokemonDtoListToPokemonMoveList(pokemonDto.getMoves(), pokemon));
     return pokemon;
   }
 
@@ -162,6 +156,24 @@ public final class PokemonMapper {
             .type(pokemonMove.getType())
             .power(pokemonMove.getPower())
             .build();
+  }
+
+  /**
+   * pokemonMoveDtoListToPokemonMoveList .
+   *
+   * @param pokemonMoveDtoList .
+   * @return PokemonMove
+   */
+  public static List<PokemonMove> pokemonDtoListToPokemonMoveList(final List<PokemonMoveDto> pokemonMoveDtoList,
+                                                                  final Pokemon pokemon) {
+    return pokemonMoveDtoList.stream()
+            .map(pokemonMoveDto -> PokemonMove.builder()
+                    .name(pokemonMoveDto.getName())
+                    .type(pokemonMoveDto.getType())
+                    .power(pokemonMoveDto.getPower())
+                    .pokemon(pokemon)
+                    .build())
+            .collect(Collectors.toList());
   }
 
 }
