@@ -23,7 +23,7 @@ public class CorsConfiguration {
     return new WebMvcConfigurer() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/pokemons/**")
+        registry.addMapping("/v1/pokemons/**")
                 .allowedOrigins("http://localhost:3000")
                 .allowedMethods("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS");
       }

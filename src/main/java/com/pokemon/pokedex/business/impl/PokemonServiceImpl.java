@@ -1,9 +1,11 @@
 package com.pokemon.pokedex.business.impl;
 
 import com.pokemon.pokedex.business.PokemonService;
+import com.pokemon.pokedex.configuration.PokemonProperties;
 import com.pokemon.pokedex.exception.PokemonNotFoundException;
 import com.pokemon.pokedex.mappers.PokemonMapper;
 import com.pokemon.pokedex.model.dto.PokemonDto;
+import com.pokemon.pokedex.model.dto.PokemonInfoDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchFavoriteDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchNameDto;
 import com.pokemon.pokedex.model.entity.Pokemon;
@@ -32,13 +34,15 @@ public class PokemonServiceImpl implements PokemonService {
 
   private final PokemonRepository pokemonRepository;
   private final PokemonEvolutionRepository pokemonEvolutionRepository;
+  private final PokemonProperties pokemonProperties;
 
   @Override
   public List<PokemonDto> findAllPokemons(final String orderByColumn, final boolean ascending) {
-    return pokemonRepository.findAllByOrderByCreatedAtAndCp(orderByColumn,ascending)
+    return pokemonRepository.findAllByOrderByCreatedAtAndCp(orderByColumn, ascending)
             .stream().map(PokemonMapper::pokemonToPokemonDto)
             .collect(Collectors.toList());
   }
+
 
   @Override
   public PokemonDto savePokemon(final PokemonDto pokemonDto) throws PokemonNotFoundException {
@@ -47,8 +51,11 @@ public class PokemonServiceImpl implements PokemonService {
       pokemonDto.setEvolution(pokemonEvolution.get().getEvolution());
       pokemonDto.setRequiredCandies(pokemonEvolution.get().getCandyAmount());
     }
-    final Pokemon pokemon = pokemonRepository.save(PokemonMapper.pokemonDtoToPokemon(pokemonDto));
-    return PokemonMapper.pokemonToPokemonDto(pokemon);
+    if (pokemonProperties.getLegendary().contains(pokemonDto.getName())) {
+      pokemonDto.setCp(5000);
+    }
+    final Pokemon pokemonSaved = pokemonRepository.save(PokemonMapper.pokemonDtoToPokemon(pokemonDto));
+    return PokemonMapper.pokemonToPokemonDto(pokemonSaved);
   }
 
   @Override
@@ -105,5 +112,10 @@ public class PokemonServiceImpl implements PokemonService {
             })
             .map(PokemonMapper::pokemonToPokemonDto)
             .orElseThrow(() -> new PokemonNotFoundException(id));
+  }
+
+  @Override
+  public List<PokemonInfoDto> findAllPokemonInfo(Long maxId) {
+    return pokemonRepository.findAllPokemonInfo(maxId);
   }
 }

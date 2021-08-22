@@ -1,5 +1,6 @@
 package com.pokemon.pokedex.business.impl;
 
+import com.pokemon.pokedex.configuration.PokemonProperties;
 import com.pokemon.pokedex.exception.PokemonNotFoundException;
 import com.pokemon.pokedex.model.dto.PokemonDto;
 import com.pokemon.pokedex.model.dto.PokemonMoveDto;
@@ -39,6 +40,9 @@ class PokemonServiceImplTest {
 
     @Mock
     private PokemonEvolutionRepository pokemonEvolutionRepository;
+
+    @Mock
+    private PokemonProperties pokemonProperties;
 
     @InjectMocks
     private PokemonServiceImpl pokemonService;

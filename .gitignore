@@ -9,6 +9,7 @@ gradlew*
 .gradle
 # Log file
 *.log
+*.gz
 
 # BlueJ files
 *.ctxt

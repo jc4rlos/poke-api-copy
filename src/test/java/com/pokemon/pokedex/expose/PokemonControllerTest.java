@@ -52,7 +52,7 @@ class PokemonControllerTest {
     final PokemonDto pokemonDto =getPokemonDto();
     when(pokemonService.savePokemon(any(PokemonDto.class))).thenReturn(pokemonDto);
 
-    mockMvc.perform(post("/pokemons")
+    mockMvc.perform(post("/v1/pokemons")
             .content(objectMapper.writeValueAsString(pokemonDto))
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .contentType(MediaType.APPLICATION_JSON))
@@ -66,7 +66,7 @@ class PokemonControllerTest {
     pokemons.add(getPokemonDto());
     when(pokemonService.findAllPokemons(anyString(),anyBoolean())).thenReturn(pokemons);
 
-    mockMvc.perform(get("/pokemons?orderByColumn=CP&ascending=false")
+    mockMvc.perform(get("/v1/pokemons?orderByColumn=CP&ascending=false")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -79,7 +79,7 @@ class PokemonControllerTest {
     final PokemonDto pokemon =getPokemonDto();
     when(pokemonService.findPokemonById(anyLong())).thenReturn(pokemon);
 
-    mockMvc.perform(get("/pokemons/1")
+    mockMvc.perform(get("/v1/pokemons/1")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -91,7 +91,7 @@ class PokemonControllerTest {
     final PokemonDto pokemonDto =getPokemonDto();
     when(pokemonService.updatePokemon(any(PokemonDto.class),anyLong())).thenReturn(pokemonDto);
 
-    mockMvc.perform(put("/pokemons/1")
+    mockMvc.perform(put("/v1/pokemons/1")
             .content(objectMapper.writeValueAsString(pokemonDto))
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .contentType(MediaType.APPLICATION_JSON))
@@ -105,7 +105,7 @@ class PokemonControllerTest {
     final PokemonDto pokemonDto =getPokemonDto();
     when(pokemonService.patchNamePokemon(any(PokemonPatchNameDto.class),anyLong())).thenReturn(pokemonDto);
 
-    mockMvc.perform(patch("/pokemons/update-name/1")
+    mockMvc.perform(patch("/v1/pokemons/update-name/1")
             .content(objectMapper.writeValueAsString(pokemonPatchNameDto))
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .contentType(MediaType.APPLICATION_JSON))
@@ -120,7 +120,7 @@ class PokemonControllerTest {
     when(pokemonService.patchFavoritePokemon(any(PokemonPatchFavoriteDto.class),anyLong()))
             .thenReturn(pokemonDto);
 
-    mockMvc.perform(patch("/pokemons/make-favorite/1")
+    mockMvc.perform(patch("/v1/pokemons/make-favorite/1")
             .content(objectMapper.writeValueAsString(pokemonPatchFavoriteDto))
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .contentType(MediaType.APPLICATION_JSON))
@@ -133,7 +133,7 @@ class PokemonControllerTest {
     final PokemonDto pokemon =getPokemonDto();
     when(pokemonService.deletePokemonById(anyLong())).thenReturn(pokemon);
 
-    mockMvc.perform(delete("/pokemons/1")
+    mockMvc.perform(delete("/v1/pokemons/1")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())

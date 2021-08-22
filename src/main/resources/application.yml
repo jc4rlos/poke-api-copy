@@ -1,13 +1,17 @@
 server:
   port: 9091
   servlet:
-    context-path: /pokedex/v1
+    context-path: /pokedex/api
 
 spring:
   application:
     name: pokedex-v1
-  main:
-    allow-bean-definition-overriding: true
+#  boot:
+#    admin:
+#      client:
+#        url: http://localhost:8081/
+#  main:
+#    allow-bean-definition-overriding: true
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=pokemonDb
     username: sa
@@ -27,6 +31,10 @@ management:
       enabled: true
     prometheus:
       enabled: true
+    loggers:
+      enabled: true
+    health:
+      show-details: always
   endpoints:
     web:
       exposure:
@@ -36,7 +44,11 @@ management:
       prometheus:
         enabled: true
 
+
+
 logging:
+  file:
+    name: pokedex-v1.log
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'
     file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
@@ -45,4 +57,19 @@ logging:
     com.pokemon.pokedex: DEBUG
     org.hibernate:
       SQL: DEBUG
+
+api:
+  pokemon:
+    legendary:
+      - lugia
+      - articuno
+      - zapdos
+      - moltres
+      - mewtwo
+      - ho-oh
+      - regirock
+      - regice
+      - registeel
+
+
 
