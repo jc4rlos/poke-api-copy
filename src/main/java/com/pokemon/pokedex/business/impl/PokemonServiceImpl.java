@@ -6,19 +6,27 @@ import com.pokemon.pokedex.exception.PokemonNotFoundException;
 import com.pokemon.pokedex.mappers.PokemonMapper;
 import com.pokemon.pokedex.model.dto.PokemonDto;
 import com.pokemon.pokedex.model.dto.PokemonInfoDto;
+import com.pokemon.pokedex.model.dto.PokemonPageDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchFavoriteDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchNameDto;
+import com.pokemon.pokedex.model.dto.PokemonRegionsDto;
 import com.pokemon.pokedex.model.entity.Pokemon;
 import com.pokemon.pokedex.model.entity.PokemonEvolution;
+import com.pokemon.pokedex.model.projections.PokemonRegionsProjection;
 import com.pokemon.pokedex.repository.PokemonEvolutionRepository;
 import com.pokemon.pokedex.repository.PokemonRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +48,14 @@ public class PokemonServiceImpl implements PokemonService {
   public List<PokemonDto> findAllPokemons(final String orderByColumn, final boolean ascending) {
     return pokemonRepository.findAllByOrderByCreatedAtAndCp(orderByColumn, ascending)
             .stream().map(PokemonMapper::pokemonToPokemonDto)
+            .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<PokemonDto> findAllPokemonsSort(final String orderByColumn, boolean ascending) {
+    return pokemonRepository.findAll(sortByCreatedAtAndCp(orderByColumn, ascending))
+            .stream()
+            .map(PokemonMapper::pokemonToPokemonDto)
             .collect(Collectors.toList());
   }
 
@@ -117,5 +133,47 @@ public class PokemonServiceImpl implements PokemonService {
   @Override
   public List<PokemonInfoDto> findAllPokemonInfo(Long maxId) {
     return pokemonRepository.findAllPokemonInfo(maxId);
+  }
+
+  @Override
+  public PokemonPageDto findAllPageable(final int page, final int size) {
+    Pageable pageable = PageRequest.of(page, size);
+    Page<Pokemon> pokemonsPage = pokemonRepository.findAll(pageable);
+    return PokemonPageDto.builder()
+            .pokemons(pokemonsPage.getContent()
+                    .stream()
+                    .map(PokemonMapper::pokemonToPokemonDto)
+                    .collect(Collectors.toList()))
+            .currentPage(pokemonsPage.getNumber())
+            .totalItems(pokemonsPage.getTotalElements())
+            .totalPages(pokemonsPage.getTotalPages())
+            .build();
+  }
+
+  @Override
+  public List<PokemonRegionsProjection> findAllPokemonRegions(final String name) {
+    return new ArrayList<>(pokemonRepository.findAllPokemonRegions("%".concat(name).concat("%")));
+  }
+
+  @Override
+  public List<PokemonRegionsDto> findAllPokemonRegionsDto(final String name) {
+    return pokemonRepository.findAllPokemonRegionsDto(name);
+  }
+
+  @Override
+  public List<PokemonRegionsDto> findAllPokemonRegionsCriteria(final String name) {
+    return pokemonRepository.findAllPokemonRegionsCriteria(name);
+  }
+
+  private Sort sortByCreatedAtAndCp(final String orderByColumn, final boolean ascending) {
+    String column = "order";
+    if (orderByColumn.equals(pokemonProperties.getSortByDate())) {
+      column = "createdAt";
+    }
+    if (orderByColumn.equals(pokemonProperties.getSortByCp())) {
+      column = "cp";
+    }
+    Sort.Direction direction = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
+    return Sort.by(direction, column);
   }
 }

@@ -6,13 +6,14 @@ import com.pokemon.pokedex.model.dto.PokemonDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchFavoriteDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchNameDto;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+//import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+//@RunWith(SpringRunner.class)
 @WebMvcTest(PokemonController.class)
 class PokemonControllerTest {
 
@@ -48,76 +49,83 @@ class PokemonControllerTest {
 
 
   @Test
-  void createPokemon_whenPostMethod() throws Exception {
-    final PokemonDto pokemonDto =getPokemonDto();
-    when(pokemonService.savePokemon(any(PokemonDto.class))).thenReturn(pokemonDto);
+  void should_isCreated_when_pokemonDtoIsValid() throws Exception {
+    //given
+    final PokemonDto pokemonDto = getPokemonDto();
 
-    mockMvc.perform(post("/v1/pokemons")
-            .content(objectMapper.writeValueAsString(pokemonDto))
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.name",is(pokemonDto.getName())));
+    //when
+    when(pokemonService.savePokemon(any(PokemonDto.class))).thenReturn(pokemonDto);
+    final ResultActions result = mockMvc.perform(
+            post("/v1/pokemons")
+                    .accept(MediaType.APPLICATION_JSON_VALUE)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(pokemonDto))
+    );
+
+    //then
+    final String expectedPokemonName = pokemonDto.getName();
+    result.andExpect(status().isCreated());
+    result.andExpect(jsonPath("$.name", is(expectedPokemonName)));
   }
 
   @Test
-  void findAllPokemons_whenGetMethod() throws Exception {
+  void should_isOkAndHasSize_when_orderByColumnAndAscendingIsCorrect() throws Exception {
     final List<PokemonDto> pokemons = new ArrayList<>();
     pokemons.add(getPokemonDto());
-    when(pokemonService.findAllPokemons(anyString(),anyBoolean())).thenReturn(pokemons);
+    when(pokemonService.findAllPokemons(anyString(), anyBoolean())).thenReturn(pokemons);
 
     mockMvc.perform(get("/v1/pokemons?orderByColumn=CP&ascending=false")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$",hasSize(1)))
-            .andExpect(jsonPath("$[0].name",is("pokemon")));
+            .andExpect(jsonPath("$[0].name", is("pokemon")));
   }
 
   @Test
-  void findPokemonById_whenGetMethod() throws Exception {
-    final PokemonDto pokemon =getPokemonDto();
+  void should_isOk_when_pokemonIdIfFound() throws Exception {
+    final PokemonDto pokemon = getPokemonDto();
     when(pokemonService.findPokemonById(anyLong())).thenReturn(pokemon);
 
     mockMvc.perform(get("/v1/pokemons/1")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name",is(pokemon.getName())));
+            .andExpect(jsonPath("$.name", is(pokemon.getName())));
   }
 
   @Test
-  void updatePokemon_whenPutMethod() throws Exception {
-    final PokemonDto pokemonDto =getPokemonDto();
-    when(pokemonService.updatePokemon(any(PokemonDto.class),anyLong())).thenReturn(pokemonDto);
+  void should_isUpdated_when_pokemonDtoIsValid() throws Exception {
+    final PokemonDto pokemonDto = getPokemonDto();
+    when(pokemonService.updatePokemon(any(PokemonDto.class), anyLong())).thenReturn(pokemonDto);
 
     mockMvc.perform(put("/v1/pokemons/1")
             .content(objectMapper.writeValueAsString(pokemonDto))
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name",is(pokemonDto.getName())));
+            .andExpect(jsonPath("$.name", is(pokemonDto.getName())));
   }
 
   @Test
   void patchNamePokemon_whenPatchMethod() throws Exception {
-    final PokemonPatchNameDto pokemonPatchNameDto =getPokemonPatchNameDto();
-    final PokemonDto pokemonDto =getPokemonDto();
-    when(pokemonService.patchNamePokemon(any(PokemonPatchNameDto.class),anyLong())).thenReturn(pokemonDto);
+    final PokemonPatchNameDto pokemonPatchNameDto = getPokemonPatchNameDto();
+    final PokemonDto pokemonDto = getPokemonDto();
+    when(pokemonService.patchNamePokemon(any(PokemonPatchNameDto.class), anyLong())).thenReturn(pokemonDto);
 
     mockMvc.perform(patch("/v1/pokemons/update-name/1")
             .content(objectMapper.writeValueAsString(pokemonPatchNameDto))
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name",is(pokemonDto.getName())));
+            .andExpect(jsonPath("$.name", is(pokemonDto.getName())));
   }
 
   @Test
   void patchFavoritePokemon_whenPatchMethod() throws Exception {
-    final PokemonPatchFavoriteDto pokemonPatchFavoriteDto =getPokemonPatchFavoriteDto();
-    final PokemonDto pokemonDto =getPokemonDto();
-    when(pokemonService.patchFavoritePokemon(any(PokemonPatchFavoriteDto.class),anyLong()))
+    final PokemonPatchFavoriteDto pokemonPatchFavoriteDto = getPokemonPatchFavoriteDto();
+    final PokemonDto pokemonDto = getPokemonDto();
+    when(pokemonService.patchFavoritePokemon(any(PokemonPatchFavoriteDto.class), anyLong()))
             .thenReturn(pokemonDto);
 
     mockMvc.perform(patch("/v1/pokemons/make-favorite/1")
@@ -125,30 +133,29 @@ class PokemonControllerTest {
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name",is(pokemonDto.getName())));
+            .andExpect(jsonPath("$.name", is(pokemonDto.getName())));
   }
 
   @Test
   void deletePokemonById_whenDeleteMethod() throws Exception {
-    final PokemonDto pokemon =getPokemonDto();
+    final PokemonDto pokemon = getPokemonDto();
     when(pokemonService.deletePokemonById(anyLong())).thenReturn(pokemon);
 
     mockMvc.perform(delete("/v1/pokemons/1")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name",is(pokemon.getName())));
+            .andExpect(jsonPath("$.name", is(pokemon.getName())));
   }
 
 
-  private PokemonPatchFavoriteDto getPokemonPatchFavoriteDto(){
+  private PokemonPatchFavoriteDto getPokemonPatchFavoriteDto() {
     return PokemonPatchFavoriteDto.builder().favorite(true).id(1L).build();
   }
 
-  private PokemonPatchNameDto getPokemonPatchNameDto(){
+  private PokemonPatchNameDto getPokemonPatchNameDto() {
     return PokemonPatchNameDto.builder().name("pokemon").build();
   }
-
 
 
   private PokemonDto getPokemonDto() {

@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -68,7 +69,10 @@ public class Pokemon extends Audit {
   @Builder.Default
   private Boolean deleted = Boolean.FALSE;
 
-  @OneToMany(mappedBy = "pokemon",cascade = CascadeType.PERSIST)
+  @OneToMany(mappedBy = "pokemon",cascade = CascadeType.ALL)
   private List<PokemonMove> moves ;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  private PokemonRegion region;
 
 }

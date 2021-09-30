@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/tables/pokemon-evolution.yml
   - include:
       file: db/changelog/tables/pokemon-moves.yml
+  - include:
+      file: db/changelog/tables/pokemon-regions.yml

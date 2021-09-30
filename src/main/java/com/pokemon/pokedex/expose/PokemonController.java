@@ -2,10 +2,13 @@ package com.pokemon.pokedex.expose;
 
 import com.pokemon.pokedex.business.PokemonService;
 import com.pokemon.pokedex.exception.PokemonNotFoundException;
-
 import com.pokemon.pokedex.model.dto.PokemonDto;
+import com.pokemon.pokedex.model.dto.PokemonPageDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchFavoriteDto;
 import com.pokemon.pokedex.model.dto.PokemonPatchNameDto;
+import com.pokemon.pokedex.model.dto.PokemonRegionsDto;
+import com.pokemon.pokedex.model.projections.PokemonRegionsProjection;
+
 import java.util.List;
 import javax.validation.Valid;
 
@@ -22,8 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-
 
 
 /**
@@ -53,9 +54,20 @@ public class PokemonController {
    *
    * @return List of PokemonDto
    */
-  @GetMapping
+  @GetMapping("/all")
   public ResponseEntity<List<PokemonDto>> findAllPokemons(@RequestParam("orderByColumn") final String orderByColumn,
                                                           @RequestParam("ascending") final boolean ascending) {
+    return new ResponseEntity<>(pokemonService.findAllPokemons(orderByColumn, ascending), HttpStatus.OK);
+  }
+
+  /**
+   * findAllPokemons .
+   *
+   * @return List of PokemonDto
+   */
+  @GetMapping
+  public ResponseEntity<List<PokemonDto>> findAllPokemonsSort(@RequestParam("orderByColumn") final String orderByColumn,
+                                                              @RequestParam("ascending") final boolean ascending) {
     return new ResponseEntity<>(pokemonService.findAllPokemons(orderByColumn, ascending), HttpStatus.OK);
   }
 
@@ -86,5 +98,35 @@ public class PokemonController {
   public ResponseEntity<PokemonDto> deletePokemonById(@PathVariable("id") final Long id) throws PokemonNotFoundException {
     return new ResponseEntity<>(pokemonService.deletePokemonById(id), HttpStatus.OK);
   }
+
+  /**
+   * findAllPokemons .
+   *
+   * @return List of PokemonDto
+   */
+  @GetMapping("/pageable")
+  public ResponseEntity<PokemonPageDto> findAllPageablePokemons(@RequestParam(defaultValue = "0") final int page,
+                                                                @RequestParam(defaultValue = "3") final int size) {
+    return new ResponseEntity<>(pokemonService.findAllPageable(page, size), HttpStatus.OK);
+  }
+
+  @GetMapping("/projection")
+  public ResponseEntity<List<PokemonRegionsProjection>> findAllPokemonRegionsProjection(@RequestParam(defaultValue = "")
+                                                                                          final String name) {
+    return new ResponseEntity<>(pokemonService.findAllPokemonRegions(name), HttpStatus.OK);
+  }
+
+  @GetMapping("/dto")
+  public ResponseEntity<List<PokemonRegionsDto>> findAllPokemonRegionsDto(@RequestParam(defaultValue = "")
+                                                                            final String name) {
+    return new ResponseEntity<>(pokemonService.findAllPokemonRegionsDto(name), HttpStatus.OK);
+  }
+
+  @GetMapping("/criteria")
+  public ResponseEntity<List<PokemonRegionsDto>> findAllPokemonRegionsCriteria(@RequestParam(defaultValue = "")
+                                                                          final String name) {
+    return new ResponseEntity<>(pokemonService.findAllPokemonRegionsCriteria(name), HttpStatus.OK);
+  }
+
 
 }
