@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: pokemon-regions-table
+      author: Carlos
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            - tableExists:
+                tableName: pokemon_regions
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pokemon_regions_key
+                  autoIncrement: true
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: pokedex_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: region
+                  type: VARCHAR(250)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: generation
+                  type: VARCHAR(250)
+            tableName: pokemon_regions

@@ -22,4 +22,6 @@ import org.springframework.context.annotation.Configuration;
 @NoArgsConstructor
 public class PokemonProperties {
   private List<String> legendary;
+  private String sortByCp;
+  private String sortByDate;
 }
