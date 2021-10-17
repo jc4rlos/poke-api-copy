@@ -4,11 +4,10 @@ pipeline {
     stages {
 		stage ("build") {
         	steps {
-            	echo 'xdddddddddd'
-			withGradle(){
-				sh 'chmod +x gradlew'
-			  sh './gradlew build'
-			}
+            
+			 echo 'Compile project'
+    sh "chmod +x gradlew"
+    sh "./gradlew clean build --no-daemon"
             }
         }
     }
