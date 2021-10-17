@@ -3,8 +3,8 @@
 
 build
 target
-gradle
-gradlew*
+#gradle
+#gradlew*
 .idea
 .gradle
 # Log file
